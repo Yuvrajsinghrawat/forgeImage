@@ -3,12 +3,21 @@ import * as fabric from "fabric";
 import "./EditPage.css";
 
 function EditPage({ image }) {
+  const [canvas,setCanvas] = useState(null);
   const canvasRef = useRef(null);
   const fabricCanvasRef = useRef(null);
 
   useEffect(() => {
-    console.log("image", image);
+    if(!image){
+      console.log("image not there")
+    }else{
+      console.log("image", image);
+    }
     const canvasElement = canvasRef.current;
+    if(!canvasElement){
+      console.error("cancas element not availale")
+      return
+    }
     const fabricCanvas = new fabric.Canvas(canvasElement, {
       width: 1500,
       height: 500,
@@ -16,13 +25,17 @@ function EditPage({ image }) {
 
     fabricCanvasRef.current = fabricCanvas;
 
-    fabric.Image.fromURL(image, (img) => {
-      console.log("image inside fabric", image);
-      console.log("img", img);
-      img.scaleToWidth(1000);
-      fabricCanvas.add(img);
-      fabricCanvas.renderAll();
-    });
+    try{
+      fabric.Image.fromURL(image, (img) => {
+        console.log("image inside fabric", image);
+        console.log("img", img);
+        img.scaleToWidth(1000);
+        fabricCanvas.add(img);
+        fabricCanvas.renderAll();
+      });
+    }catch(error){
+      console.error("error loading iamge with fabric",error)
+    }
 
     return () => {
       fabricCanvas.dispose();

@@ -1,12 +1,13 @@
 /* Full page container */
 .search-page-container {
-    width: 100%;
+    width: 98%;
     padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
     min-height: 100vh;
+    background-color: blueviolet;
   }
   
   /* Contact information at the top left corner */
