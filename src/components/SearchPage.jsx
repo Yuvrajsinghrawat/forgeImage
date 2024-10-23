@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { FaSearch } from "react-icons/fa"; // Importing the search icon from react-icons
+import { FaSearch } from "react-icons/fa"; 
 import './SearchPage.css';
 
 function SearchPage({ setSelectedImage }) {

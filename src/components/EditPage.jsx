@@ -3,44 +3,76 @@ import * as fabric from "fabric";
 import "./EditPage.css";
 
 function EditPage({ image }) {
-  const [canvas,setCanvas] = useState(null);
+  const [canvas, setCanvas] = useState(null);
   const canvasRef = useRef(null);
   const fabricCanvasRef = useRef(null);
 
   useEffect(() => {
-    if(!image){
-      console.log("image not there")
-    }else{
+    if (!image) {
+      console.log("image not available");
+    } else {
       console.log("image", image);
     }
+
     const canvasElement = canvasRef.current;
-    if(!canvasElement){
-      console.error("cancas element not availale")
-      return
+    if (!canvasElement) {
+      console.error("canvas element not available");
+      return;
     }
+
     const fabricCanvas = new fabric.Canvas(canvasElement, {
-      width: 1500,
+      width: 800,
       height: 500,
     });
 
     fabricCanvasRef.current = fabricCanvas;
+    setCanvas(fabricCanvas);
 
-    try{
+    try {
       fabric.Image.fromURL(image, (img) => {
         console.log("image inside fabric", image);
-        console.log("img", img);
         img.scaleToWidth(1000);
         fabricCanvas.add(img);
         fabricCanvas.renderAll();
+        logCanvasLayers(fabricCanvas); // Log layers after adding the image
       });
-    }catch(error){
-      console.error("error loading iamge with fabric",error)
+    } catch (error) {
+      console.error("error loading image with fabric", error);
     }
 
     return () => {
       fabricCanvas.dispose();
     };
   }, [image]);
+
+  // Function to log all canvas layers and their attributes
+  const logCanvasLayers = (canvas) => {
+    const objects = canvas.getObjects();
+    const layers = objects.map((obj) => {
+      let attributes = {
+        type: obj.type,
+        left: obj.left,
+        top: obj.top,
+        width: obj.width,
+        height: obj.height,
+        scaleX: obj.scaleX,
+        scaleY: obj.scaleY,
+        angle: obj.angle,
+      };
+
+      if (obj.type === "image") {
+        attributes.src = obj.getSrc(); 
+      } else if (obj.type === "textbox") {
+        attributes.text = obj.text; 
+        attributes.fontSize = obj.fontSize;
+        attributes.fill = obj.fill;
+      }
+
+      return attributes;
+    });
+
+    console.log("Canvas Layers:", layers);
+  };
 
   const addText = () => {
     const fabricCanvas = fabricCanvasRef.current;
@@ -53,6 +85,7 @@ function EditPage({ image }) {
     });
     fabricCanvas.add(text);
     fabricCanvas.renderAll();
+    logCanvasLayers(fabricCanvas); 
   };
 
   const addShape = (shapeType) => {
@@ -63,7 +96,7 @@ function EditPage({ image }) {
         shape = new fabric.Circle({
           radius: 50,
           fill: "yellow",
-          left: 150,
+          left: 250,
           top: 150,
         });
         break;
@@ -90,6 +123,7 @@ function EditPage({ image }) {
     }
     fabricCanvas.add(shape);
     fabricCanvas.renderAll();
+    logCanvasLayers(fabricCanvas);
   };
 
   const downloadImage = () => {
