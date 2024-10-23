@@ -1,15 +1,13 @@
-import React, { useEffect, useRef } from "react";
-import * as fabric from 'fabric';
-import { useNavigate } from "react-router-dom";
-import './EditPage.css'; 
+import React, { useEffect, useRef, useState } from "react";
+import * as fabric from "fabric";
+import "./EditPage.css";
 
-function EditPage({ image, goBackToSearch }) {
-    const navigate = useNavigate();
+function EditPage({ image }) {
   const canvasRef = useRef(null);
   const fabricCanvasRef = useRef(null);
 
   useEffect(() => {
-    console.log("image",image)
+    console.log("image", image);
     const canvasElement = canvasRef.current;
     const fabricCanvas = new fabric.Canvas(canvasElement, {
       width: 1500,
@@ -19,6 +17,8 @@ function EditPage({ image, goBackToSearch }) {
     fabricCanvasRef.current = fabricCanvas;
 
     fabric.Image.fromURL(image, (img) => {
+      console.log("image inside fabric", image);
+      console.log("img", img);
       img.scaleToWidth(1000);
       fabricCanvas.add(img);
       fabricCanvas.renderAll();
@@ -49,7 +49,7 @@ function EditPage({ image, goBackToSearch }) {
       case "circle":
         shape = new fabric.Circle({
           radius: 50,
-          fill: "blue",
+          fill: "yellow",
           left: 150,
           top: 150,
         });
@@ -58,7 +58,7 @@ function EditPage({ image, goBackToSearch }) {
         shape = new fabric.Rect({
           width: 100,
           height: 60,
-          fill: "green",
+          fill: "red",
           left: 150,
           top: 150,
         });
@@ -67,7 +67,7 @@ function EditPage({ image, goBackToSearch }) {
         shape = new fabric.Triangle({
           width: 100,
           height: 100,
-          fill: "yellow",
+          fill: "black",
           left: 150,
           top: 150,
         });
@@ -92,13 +92,8 @@ function EditPage({ image, goBackToSearch }) {
 
   return (
     <div className="container">
-      <button className="back-button" onClick={() => navigate("/")}>
-        Back to Search
-      </button>
       <h1>Edit Your Image</h1>
-      <div className="canvas-container">
-        <canvas ref={canvasRef}></canvas>
-      </div>
+      <canvas ref={canvasRef}></canvas>
       <div className="buttons-container">
         <button onClick={addText}>Add Caption</button>
         <button onClick={() => addShape("circle")}>Add Circle</button>
